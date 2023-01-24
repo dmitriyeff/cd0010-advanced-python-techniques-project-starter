@@ -76,10 +76,7 @@ class NEODatabase:
         # TODO: Fetch an NEO by its primary designation.
         neo_by_designation = self.neos_by_designation.get(designation)
 
-        if neo_by_designation:
-            return neo_by_designation
-
-        return None
+        return neo_by_designation
 
 
     def get_neo_by_name(self, name):
@@ -106,11 +103,8 @@ class NEODatabase:
             for neo_name in self.neos_by_name.keys():
                 if neo_name.strip().lower() == name:
                     neo_by_name = self.neos_by_name.get(neo_name)
-         
-        if neo_by_name:
-            return neo_by_name
 
-        return None
+        return neo_by_name
 
     def query(self, filters=()):
         print('filters => ', filters)
