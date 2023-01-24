@@ -116,7 +116,7 @@ class CloseApproach:
 
     def __str__(self):
         """Return `str(self)`."""
-        return f"A CloseApproach {self._designation}, on {self.time_str}, closest approach {self.distance} in astronomical units, and {self.velocity} in kilometers per second"
+        return f"A CloseApproach {self._designation}, on {self.time_str}, approaches Earth at a distance of {self.distance} in astronomical units, and velocity {self.velocity} of km/s."
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""

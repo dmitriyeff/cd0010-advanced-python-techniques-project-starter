@@ -109,7 +109,11 @@ def create_filters(
     :return: A collection of filters for use with `query`.
     """
     # TODO: Decide how you will represent your filters.
-    return ()
+    return (date, start_date, end_date,
+        distance_min, distance_max,
+        velocity_min, velocity_max,
+        diameter_min, diameter_max,
+        hazardous)
 
 
 def limit(iterator, n=None):
@@ -122,4 +126,17 @@ def limit(iterator, n=None):
     :yield: The first (at most) `n` values from the iterator.
     """
     # TODO: Produce at most `n` values from the given iterator.
-    return iterator
+
+    if n is None or n == 0:
+        for item in iterator: 
+            yield item
+    else:
+        # init counter
+        value = 0
+        
+        for item in iterator:
+            if value >= n:
+                break
+
+            value += 1    
+            yield item

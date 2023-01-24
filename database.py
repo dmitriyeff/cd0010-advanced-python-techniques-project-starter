@@ -43,11 +43,19 @@ class NEODatabase:
         self._approaches = approaches
 
         # TODO: What additional auxiliary data structures will be useful?
+        self.neos_by_designation = {}
+        self.neos_by_name = {}
+
+        for neo in self._neos:
+            self.neos_by_designation[neo.designation] = neo
+
+            if neo.name:
+                self.neos_by_name[neo.name] = neo
 
         # TODO: Link together the NEOs and their close approaches.
 
         for approach in self._approaches:
-            neo = self.get_neo_by_designation(approach._designation) 
+            neo = self.neos_by_designation[approach._designation]
             approach.neo = neo
 
             neo.approaches.append(approach)
@@ -66,10 +74,10 @@ class NEODatabase:
         :return: The `NearEarthObject` with the desired primary designation, or `None`.
         """
         # TODO: Fetch an NEO by its primary designation.
-        neo_by_designation = [neo for neo in self._neos if neo.designation == designation]
+        neo_by_designation = self.neos_by_designation.get(designation)
 
         if neo_by_designation:
-            return neo_by_designation[0]
+            return neo_by_designation
 
         return None
 
@@ -91,23 +99,21 @@ class NEODatabase:
         # TODO: Fetch an NEO by its name.
 
         # check for exact name
-        neo_by_name = [neo for neo in self._neos if neo.name == name]
+        neo_by_name = self.neos_by_name.get(name)
 
-        # if no exact matches, check spelling and capitalization
-        if len(neo_by_name) < 1:
-            for neo in self._neos:
-                neo_name = neo.name
-                if neo_name and neo_name.strip().lower() == name:
-                    neo_by_name.append(neo)
-        
+        # if no exact matches, check for spelling and capitalization
+        if not neo_by_name:
+            for neo_name in self.neos_by_name.keys():
+                if neo_name.strip().lower() == name:
+                    neo_by_name = self.neos_by_name.get(neo_name)
+         
         if neo_by_name:
-            print('neo_by_name => ', neo_by_name)
-            return neo_by_name[0]
+            return neo_by_name
 
         return None
-        #return neo_by_name[0] or None
 
     def query(self, filters=()):
+        print('filters => ', filters)
         """Query close approaches to generate those that match a collection of filters.
 
         This generates a stream of `CloseApproach` objects that match all of the
@@ -123,4 +129,7 @@ class NEODatabase:
         """
         # TODO: Generate `CloseApproach` objects that match all of the filters.
         for approach in self._approaches:
+            #python3 main.py query --min-distance 0.0921795123769547 --max-distance  0.0921795123769547 
+            #print('approach => ', approach.distance)
             yield approach
+            #break
