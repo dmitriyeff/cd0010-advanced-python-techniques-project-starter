@@ -13,6 +13,8 @@ You'll edit this file in Part 4.
 import csv
 import json
 
+from models import NearEarthObject
+
 
 def write_to_csv(results, filename):
     """Write an iterable of `CloseApproach` objects to a CSV file.
@@ -24,11 +26,28 @@ def write_to_csv(results, filename):
     :param results: An iterable of `CloseApproach` objects.
     :param filename: A Path-like object pointing to where the data should be saved.
     """
-    fieldnames = (
-        'datetime_utc', 'distance_au', 'velocity_km_s',
-        'designation', 'name', 'diameter_km', 'potentially_hazardous'
-    )
+
     # TODO: Write the results to a CSV file, following the specification in the instructions.
+    approaches = []
+    if results:
+        approaches = list(results)
+
+    with open(filename, 'w') as csvfile:
+         # changed fieldnames value from Tuple to List
+        fieldnames = [
+            'datetime_utc', 'distance_au', 'velocity_km_s',
+            'designation', 'name', 'diameter_km', 'potentially_hazardous'
+        ]
+
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=',')
+
+        writer.writeheader()
+
+        try:
+            for approach in approaches:
+                writer.writerow(approach.serialize_csv())
+        except:
+            print('No results for the query')
 
 
 def write_to_json(results, filename):
@@ -43,3 +62,15 @@ def write_to_json(results, filename):
     :param filename: A Path-like object pointing to where the data should be saved.
     """
     # TODO: Write the results to a JSON file, following the specification in the instructions.
+    approaches = []
+    if results:
+        approaches = list(results)
+    
+    container = []
+    for approach in approaches:
+        container.append(approach.serialize_json())
+    
+    json_object = json.dumps(container, indent=4)
+
+    with open(filename, "w") as json_file:
+        json_file.write(json_object)

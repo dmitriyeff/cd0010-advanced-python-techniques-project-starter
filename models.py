@@ -1,4 +1,5 @@
 from helpers import cd_to_datetime, datetime_to_str
+import math
 
 
 class NearEarthObject:
@@ -43,3 +44,41 @@ class CloseApproach:
     def __repr__(self):
         return f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, " \
                f"velocity={self.velocity:.2f}, neo={self.neo!r})"
+    
+    def serialize_csv(self):
+        name = self.neo.name
+
+        if name is None:
+            name = ''
+        else:
+            name = self.neo.name
+
+        return {
+            'datetime_utc': datetime_to_str(self.time),
+            'distance_au': self.distance,
+            'velocity_km_s': self.velocity,
+            'designation': self._designation,
+            'name': name,
+            'diameter_km': self.neo.diameter if not math.isnan(self.neo.diameter) else '',
+            'potentially_hazardous': str(self.neo.hazardous)
+        }
+    
+    def serialize_json(self):
+        name = self.neo.name
+
+        if name is None:
+            name = ''
+        else:
+            name = self.neo.name
+
+        return {
+            'datetime_utc': datetime_to_str(self.time),
+            'distance_au': self.distance,
+            'velocity_km_s': self.velocity,
+            'neo': {
+                'designation': self._designation,
+                'name': name,
+                'diameter_km': self.neo.diameter,
+                'potentially_hazardous': self.neo.hazardous
+            }
+        }
