@@ -155,7 +155,6 @@ def limit(iterator, n=None):
     :param n: The maximum number of values to produce.
     :yield: The first (at most) `n` values from the iterator.
     """
-
     if n is None or n == 0:
         for item in iterator: 
             yield item
